@@ -1,3 +1,0 @@
-def anything
-  "hdhdhd"
-end
