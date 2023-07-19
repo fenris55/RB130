@@ -101,7 +101,63 @@
 
 # 1.2
 
+# Group 1
+# my_proc = proc { |thing| puts "This is a #{thing}." }
+# puts my_proc
+# puts my_proc.class
+# my_proc.call
+# my_proc.call('cat')
+
+#Observations: 
+# procs have lenient arity
+# calling the proc with no argumetn works
+# the proc executes by interpolating a blank since no argument was passed in
 
 
+# Group 2
+# my_lambda = lambda { |thing| puts "This is a #{thing}." }
+# my_second_lambda = -> (thing) { puts "This is a #{thing}." }
+# puts my_lambda
+# puts my_second_lambda
+# puts my_lambda.class
+# my_lambda.call('dog')
+# my_lambda.call
+# my_third_lambda = Lambda.new { |thing| puts "This is a #{thing}." } #does not work
+
+#Observations: 
+# a lambda is a proc object object the Proc class
+# lamba areas in parenteses -> part of the proc's state?
+# shows 2 different ways to create a lambda
+#lambdas have strict arity -> calling the lambda with no arguments produces an argument error
+
+# Group 3
+# def block_method_1(animal)
+#   yield
+# end
+
+# block_method_1('seal') { |seal| puts "This is a #{seal}."}
+# block_method_1('seal')
+
+#thoughts: 
+#call 1 doesn't pass the argument to the block -> outputs "This is a " ?
+#call 2 doesn't have a block to yield to - error?
+#correct. 
+#methods (like the yield method) have strict arity, while blocks have lenient arity
+
+# Group 4
+def block_method_2(animal)
+  yield(animal)
+end
+
+block_method_2('turtle') { |turtle| puts "This is a #{turtle}."}
+block_method_2('turtle') do |turtle, seal|
+  puts "This is a #{turtle} and a #{seal}."
+end
+block_method_2('turtle') { puts "This is a #{animal}."}
 
 
+#Thoughts: 
+#call 1 outputs correctly
+#call 2 outputs "This is a turtle and a " because blocks have lenient arity -> 
+  #first arguemtn binds to first parameter and remaining parameters are ignored (are nil)
+#call 3 throws error because there's no parameter to pass the argument into the block
