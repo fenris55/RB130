@@ -661,38 +661,271 @@
 # each number: 10 to the power of its index and then times the current number (number * 10 ^ index)
 # sum the return array of new digits and return integer
 
+# 1.8
 
+# P: 
+# write a program that takes a target number and a list of an unknown number of other numbers
+# (use 3 and 5 as default values if no set is given). select all numbers that are multiples of
+# the target number and return their sum
 
+# rules: 
+# -only check for multiple if list number is less than target number
+# -list will include unknown number of values (and from phrasing, some may be higher 
+#   than target number)
 
-class Octal
-  attr_reader :octal_num
+# # E: 
 
-  def initialize(octal_num)
-    @octal_num = octal_num
+# # D: 
+# SumOfMultiples class
+# -constructor method (3 and 5 as fault arguments; else unknown number of integer arguments)
+# -#to instance method (target number as argument)
+# -instance variable referencing list of numbers
+
+# A: 
+# NOPENOPENOPE
+# define class
+# define constructor to take unknown number of arguments (default value should be array holding 3 and 5)
+# save arguments to @number_list instance variable
+# define getter method for list
+# define #to instance method with one argument (target_number)
+# define empty result array OR initialize result to 0 and increment
+# -iterate over number_list array
+#   -check that current number is less than target number AND target number
+#   module current number equals zero
+#     -if true add to array/increment result
+#     -return result OR sum result array and return
+
+# CORRECT A:
+#tired and read the instructions wrong
+#need to iterate from 1 up to one less than the target number and find the sum of all
+# numbers that are multiples of the list numbers (with defaults 3 and 5)
+#ALSO need both a class number and an instance number
+#note: the test suite uses NO list arguments (ie relies on defaults 3 and 5) for the class method,
+#while all tests for the instance method have an input list (meaning that there is no test to  
+# see if 3,5 is used as a default for the instance method. But that's not indicated by the instructions)
+
+# Note: opted to increment the result instead of saving multiples to a collection and then summing
+# this eliminates an extra step, and is the approach used in the previous solution
+# however, this solution notes that it would be better to save the multiples to a collection
+# first => "two iterations are better than one"
+
+# C: 
+# class SumOfMultiples
+#   attr_reader :number_list
+
+#   def initialize(*list)
+#     list = [3, 5] if list.empty?
+#     @number_list = list
+#   end
+
+#   def to(target_number)
+#     result = 0
+#     (1...target_number).each do |current_num|
+#       if number_list.any? { |list_num| current_num % list_num == 0 }
+#         result +=current_num
+#       end
+#     end
+#     result
+#   end
+
+#   def self.to(target_num)
+#     SumOfMultiples.new.to(target_num)
+#   end
+# end
+
+# p SumOfMultiples.new(43, 47).to(10_000)
+
+# 1.9
+
+# P: write a program that returns the lyrics of one round of the beer song, starting
+# with the number passed in as an argument
+
+# E: see test suite
+
+# D: 
+# BeerSong class
+# 3 class methods
+  # -#lyrics -> returns entire song (separate verse at 0)
+  # -#verse -> takes one arg, prints 1 verse (0 should print final verse)
+  # -#verses -> takes 2 args as start and end -> prints all verses between args, inclusive
+  # -helper: final verse helper method - maybe no
+
+# A:
+# define BeerSong class
+# define verse method
+#   -if input is 0, return final verse
+#     else
+#   -return string of single verse with arg number interpolated
+#   -and then decremented by 1
+# define verses method
+#  -initialize loop
+#  -call verse method
+#  -decrement arg by 1
+#  -repeat until number is less than second arg
+#  -(should default to final verse if number hits 0)
+# define lyrics method
+#  -call verses with arguemetns 99 and 0
+
+#edge cases: 
+# -handle issues with single/plural/no more when arg is 1 and 2
+# -need a newline between verses
+
+#Thoughts: wondering if this will fail test cases because of the interpolation
+# i think not, since the String#==should check for (return) value equality
+
+# C: 
+# class BeerSong
+#   def self.verse(number)
+#     if number == 0
+#       "No more bottles of beer on the wall, no more bottles of beer.\n" \
+#       "Go to the store and buy some more, 99 bottles of beer on the wall.\n"
+#     else
+#       "#{number} bottle#{number == 1 ? '' : "s"} of beer on the wall, " \
+#       "#{number} bottle#{number == 1 ? '' : "s"} of beer.\n" \
+#        "Take one down and pass it around, " \
+#       "#{number.pred == 0 ? "no more" : number.pred} " \
+#       "bottle#{number.pred == 1 ? '' : "s"} of beer on the wall.\n"
+#      end
+#   end
+
+  # def self.verses(start_number, end_number)
+  #   counter = start_number
+  #   result = []
+  #     loop do
+  #       break if counter < end_number
+  #         result << self.verse(counter) #maybe could also interpolate this and then add double newline, push to string instead
+  #         result << ' '
+  #         counter -= 1
+  #     end
+  #     puts result #since there's no output, storing all generating strings
+  # end
+
+#   def self.verses(start_number, end_number)
+#     counter = start_number
+#     result = ""
+#       loop do
+        
+#           result << "#{self.verse(counter)}" #maybe could also interpolate this and then add double newline, push to string instead
+#           counter -= 1
+#           break if counter < end_number
+#           result <<  "\n" \
+          
+#       end
+#       result #since there's no output, storing all generating strings
+#   end
+
+#   def self.lyrics
+#     self.verses(99, 00)
+#   end
+# end
+
+#1.10
+
+# P: 
+# write a program that takes a string number and a target number and returns all consectutuve substrings
+# that are the length of the target number
+
+# rules: 
+# if the target number is greater than the digit string length, raise an ArgumentError
+
+# E:
+# see test suite
+
+# D:
+# Series class
+#   -constructor method that takes string number as argument
+#   -#slices instance method that takes an integer argument and returns a 
+#     collection 
+#   -for each substring taken from input number, the substring should be
+#   split into individuals integers, each of which is an (ordered) subarray element 
+
+# A:
+
+# define class
+# define constructer with one arg
+# -assign string number to instance variable
+# define #slices instance method to take one integer arg
+# -raise ArgumentError if slices argument is greater than string number length
+# -initialize empty result array
+# -iterate from index 0 up to string size minus integer
+#   - take a substring slice starting at current index with a length of integer
+#   - reverse string, convert to integer, convert to array of integers, push to result array
+#   -return result array
+
+#NOTES: forgot to handle 0s 
+# C:
+# class Series
+#   attr_reader :string_number
+
+#   def initialize(string_number)
+#     @string_number = string_number
+#   end
+
+#   def slices(length)
+#     raise ArgumentError if length > string_number.length
+#     result = []
+#     end_point = string_number.length - length
+#     (0..end_point).each do |index|
+#       substring = string_number[index, length]
+#       sub_array = []
+#       substring.each_char do |num|
+#         sub_array << num.to_i
+#       end
+#       result << sub_array
+#     end
+#     result
+#   end
+# end
+
+# refactoring: this mehtod is doing too much. splitting it up 
+# maybe code is simplifier, but much longer and doesn't seem nay easier to read.
+# complexity should be reduced through
+# class Series
+#   attr_reader :string_number
+
+#   def initialize(string_number)
+#     @string_number = string_number
+#   end
+
+#   def slices(length)
+#     raise ArgumentError if length > string_number.length
+#     substrings = get_substrings(length)
+#     substrings.map do |substring|
+#       subarray = []
+#       substring.each_char do |num|
+#         subarray << num.to_i
+#       end
+#       subarray
+#     end
+#   end
+
+#   private 
+  
+#   def get_substrings(length)
+#   result = []
+#     end_point = string_number.length - length
+#     (0..end_point).each do |index|
+#       result << string_number[index, length]
+#     end
+#     result
+#   end
+# end
+
+# from lesson solution: 
+
+class Series
+  attr_reader :number_string
+
+  def initialize(str)
+    @number_string = str
   end
 
-  def to_decimal
-    return 0 unless validate_input
-    number_array = octal_num.to_i.digits
-
-    result = number_array.map.with_index do |digit, index|
-      p digit
-      p index
-      digit*8**index
-    end
-    result.sum
+  def slices(length)
+    raise ArgumentError if length > number_string.length
+    number_string.chars.map(&:to_i).each_cons(length).to_a
   end
-
-  private
-
-  def validate_input
-    octal_num.to_i % 8 == 0 &&
-    octal_num.to_i != 0 && 
-    octal_num != '8'
-  end
-
 end
 
-p Octal.new('0').to_decimal
-p Octal.new('cat5').to_decimal
-p Octal.new('8').to_decimal
+s = Series.new('31001')
+# p s.string_number.length
+p s.slices(3)
