@@ -913,19 +913,110 @@
 
 # from lesson solution: 
 
-class Series
-  attr_reader :number_string
+# class Series
+#   attr_reader :number_string
 
-  def initialize(str)
-    @number_string = str
+#   def initialize(str)
+#     @number_string = str
+#   end
+
+#   def slices(length)
+#     raise ArgumentError if length > number_string.length
+#     number_string.chars.map(&:to_i).each_cons(length).to_a
+#   end
+# end
+
+# s = Series.new('31001')
+# # p s.string_number.length
+# p s.slices(3)
+
+## Medium Challenges
+# 1.1
+
+# P:
+# write a method that prints a diamond out of consecutive alphabet letters
+
+# rules:
+# -diamond should start and end with a single A
+# -diamond should be incremented by a consecutive odd number of spaces
+#   (1, 3, 5 etc spaces)
+# -letters should increment up to input letter and decrement back down to A
+
+# make_diamond rules: 
+# - every line should end with a newline
+# - input of A should return just an A with newline
+# - tests have no edge cases and no input validation
+
+
+# E: 
+
+# D: 
+# -Diamond class
+# -make_diamond CLASS method w/ 1 argument (letter)
+#   -array/range of letters? or use ASCII values
+
+
+# A: 
+# -define Diamond class
+# -define make_diamond class method with 1 letter argument
+# -define range A-Z and convert to array
+# -if input is A
+#   -return "A\n"
+# -find index of input letter, add 1, divide by 2 (max_spaces)
+# -set heredoc
+# -thoughts: can rely on how puts works with array to produce newline, 
+# and add each line to an array
+
+# -create string multiplying ' ' by max_spaces, A, ' ' by max_spaces
+# -repeat at end of heredoc
+
+# -iterate over alphabet range from 1 upto letter index
+# -set space_size to 1 
+# -interpolate letter at index 
+# -interpolate ' ' * space_size
+# -interpolate letter at index
+# -reassign space_size to space + 2
+# -repeat until target letter
+
+# reverse: 
+# -increment from letter index down to 1
+# -interpolate letter at index 
+# -interpolate ' ' * space_size
+# -interpolate letter at index
+# -reassign space_size to space - 2
+
+class Diamond
+  LETTERS = ('A'..'Z').to_a
+  
+  def self.inner_spaces(num)
+    if num == 1 
+      num
+    else 
+      num + num.pred
+    end
   end
 
-  def slices(length)
-    raise ArgumentError if length > number_string.length
-    number_string.chars.map(&:to_i).each_cons(length).to_a
+  def self.make_diamond(letter)
+  return "A\n" if letter == LETTERS.first
+  total_spaces = LETTERS.index(letter) 
+  
+  result = ""
+  result << "#{" " * total_spaces}A#{" " * total_spaces}\n"
+
+
+  1.upto(LETTERS.index(letter)) do |idx|
+    buffer = LETTERS.index(letter) - idx
+   result << "#{" " * buffer}#{LETTERS[idx]}#{" " * inner_spaces(idx)}#{LETTERS[idx]}#{" " * buffer}\n"
+  end
+
+  (LETTERS.index(letter) - 1).downto(1) do |idx|
+   buffer = LETTERS.index(letter) - idx
+   result << "#{" " * buffer}#{LETTERS[idx]}#{" " * inner_spaces(idx)}#{LETTERS[idx]}#{" " * buffer}\n"
+  end
+
+  result << "#{" " * total_spaces}A#{" " * total_spaces}\n"
+  result
   end
 end
 
-s = Series.new('31001')
-# p s.string_number.length
-p s.slices(3)
+puts Diamond.make_diamond('E')
