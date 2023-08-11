@@ -985,38 +985,651 @@
 # -interpolate letter at index
 # -reassign space_size to space - 2
 
-class Diamond
-  LETTERS = ('A'..'Z').to_a
+# class Diamond
+#   LETTERS = ('A'..'Z').to_a
   
-  def self.inner_spaces(num)
-    if num == 1 
-      num
-    else 
-      num + num.pred
+#   def self.inner_spaces(num)
+#     if num == 1 
+#       num
+#     else 
+#       num + num.pred
+#     end
+#   end
+
+#   def self.make_diamond(letter)
+#   return "A\n" if letter == LETTERS.first
+#   total_spaces = LETTERS.index(letter) 
+  
+#   result = ""
+#   result << "#{" " * total_spaces}A#{" " * total_spaces}\n"
+
+
+#   1.upto(LETTERS.index(letter)) do |idx|
+#     buffer = LETTERS.index(letter) - idx
+#    result << "#{" " * buffer}#{LETTERS[idx]}#{" " * inner_spaces(idx)}#{LETTERS[idx]}#{" " * buffer}\n"
+#   end
+
+#   (LETTERS.index(letter) - 1).downto(1) do |idx|
+#    buffer = LETTERS.index(letter) - idx
+#    result << "#{" " * buffer}#{LETTERS[idx]}#{" " * inner_spaces(idx)}#{LETTERS[idx]}#{" " * buffer}\n"
+#   end
+
+#   result << "#{" " * total_spaces}A#{" " * total_spaces}\n"
+#   result
+#   end
+# end
+
+# puts Diamond.make_diamond('E')
+
+# Medium 1.2
+
+# P:
+# write a problem that creates robots with unique names and resets 
+# those naems when rebooted. Names must always be unique
+
+# rules: 
+# -name should be 5 chars (2 letters, 3 numbers)
+# -name must be randomly generated
+# -no robot can share the same name
+# -
+
+# E:
+
+# D:
+# Robot class
+#   -name getter method
+#   -constuctor method to assign random name
+#   -reset instance method to change robot name 
+
+# A: 
+# define Robot class
+# define class variable all_names to array
+#   -every time assign_name generates a new name, push to @@all_names
+# define constructor method
+#   assign return value of assign_name to @name
+#   create getter method for @name
+# define assign_name helper method to assign new name
+#   2x sample from A-Z and 3x smaple from 0-9; push to string
+#   -if @@all_names includes generated name, generate new name;
+#   else, push to @@all_names and return new name
+# define reboot
+#   -invoke assign_name to assign new name
+# define verify_unique_name
+#   -check that new name has not already been generated
+
+# class Robot
+#   @@all_names = []
+
+#   attr_reader :name
+  
+#   def initialize
+#     @name = assign_name
+#   end
+
+#   def assign_name
+#     new_name = []
+#     loop do 
+#       2.times {new_name << ('A'..'Z').to_a.sample }
+#       3.times {new_name << (0..9).to_a.sample }
+#       break unless @@all_names.include?(new_name.join)
+#       new_name = []
+#     end
+#     @@all_names << new_name.join
+#     new_name.join
+#   end
+
+#   def reboot
+#     @name = assign_name
+#   end
+# end
+
+# Medium 1.3
+
+#P:
+# write a program that creates a clock without using Date or Time classes
+# should be able to add and subtract time and compare clock objects for equality
+
+# E: 
+
+# D:
+# Clock class
+# -#at() class method
+#   -can take 2 arguments (second optional)
+#     -1st is hours, 2nd is minutes
+#     -military time format
+#     -create and return new clock object
+# -#+ instance method (adding minutes)
+#     - should be able to divide into 60 and
+#     - reset time after 23:59
+#     -should not mutate time; instead return a new clock object
+# -#- instance method (substracting minutes)  
+#     - should be able to divide into 60 and
+#     - reset time after 23:59
+#     -should not mutate time; instead return a new clock object
+#     -see above notes
+# -#== instance method
+#     - should compare time of 2 clock objects
+# -#to_s instance method that returns string time 
+# -helper method
+# -format time method that handles 
+# -extra zeros for single-digit numbers
+# -wraparound -> cnovert to next day if hour > 23 or minute > 60 
+
+# A: 
+# -thoguhts: 
+# would it be better to save time as a XX:XX string or as 
+# separate hour and minute variables with integers?
+# in creatingt he additional instacne method, keep hitting issues with 
+# trying to perform math on a string because @time is a string
+# feeling like using integers would be better for funcitonality. 
+# also, technically the extra zeros are really only needed in the to_s
+# maybe handle 0s in to_s and just handle wraparounds in format_time?
+
+# C: 
+
+# class Clock
+
+#   def initialize(time="00:00")
+#     @time = time
+#   end
+
+#   def self.at(hour, minutes=00)
+#     # hour.digits.size == 1 ? hour = "0#{hour}" : hour.to_s 
+#     # minutes.digits.size == 1 ? minutes = "0#{minutes}" : minutes.to_s
+#     Clock.new.format_time(hour, minutes)
+#   end
+
+#   def +(minutes)
+#     old_time = time.split(':').map(&:to_i)
+#     new_increments = minutes.divmod(60)
+#     new_hours = old_time[0] + new_increments[0]
+#     new_minutes = old_time[1] + new_increments[1]
+    
+#     Clock.new.format_time(new_hours, new_minutes)
+#   end
+
+#   def -(minutes)
+#     old_time = time.split(':').map(&:to_i)
+#     new_increments = minutes.divmod(60)
+#     new_hours = old_time[0] - new_increments[0]
+#     new_minutes = old_time[1] - new_increments[1]
+    
+#     Clock.new.format_time(new_hours, new_minutes)
+#   end
+
+#   def ==(other_clock)
+#     self.time == other_clock.time
+#   end
+
+#   def to_s
+#     time
+#   end
+
+
+#     def format_time(hour, minutes)
+#     hour.digits.size == 1 ? hour = "0#{hour}" : hour.to_s
+#     if hour.to_i > 23 
+#       overflow_hours = hour.to_i.divmod(23)
+#       hour = overflow_hours[1].to_s
+#     end
+#     minutes.digits.size == 1 ? minutes = "0#{minutes}" : minutes.to_s
+#     "#{hour}:#{minutes}"
+#   end
+
+#   protected
+
+#   attr_accessor :time
+# end
+
+# puts Clock.at(7) + 3
+
+# NOTE: got this down to only 3 failing test. There are some marginal issues with the math
+# concernign massing midnight and adding for than a day that I can't figure out
+# class Clock
+
+#   def initialize(hour=0, minute=0)
+#     @hour = hour
+#     @minute = minute
+#   end
+
+#   def self.at(hour, minute=0)
+#     Clock.new(hour, minute)
+#   end
+
+#   def +(minutes)
+#     add_hours, add_minutes = minutes.divmod(60)
+#     new_hours = hour + add_hours
+#     new_minutes = minute + add_minutes
+    
+#     Clock.new(new_hours, new_minutes)
+#   end
+
+#   def -(minutes)
+#     subtract_hours, subtract_minutes = minutes.divmod(60)
+#     new_hours = hour - subtract_hours
+#     new_minutes = minute - subtract_minutes
+
+#     if new_hours <= 0 
+#       new_hours = new_hours + 24 until new_hours >=0
+#     end
+
+#     if new_minutes < 0 
+#       new_minutes = 60 - new_minutes.abs
+#       new_hours -= 1
+#     end
+
+#     Clock.new(new_hours, new_minutes)
+#   end
+
+#   def ==(other_clock)
+#     self.hour == other_clock.hour &&
+#     self.minute == other_clock.minute
+#   end
+
+#   def to_s
+#     display_hour = hour.to_s
+#     display_minute = minute.to_s
+#     display_hour.size == 1 ? display_hour = "0#{display_hour}" : display_hour
+#     display_minute.size == 1 ? display_minute = "0#{display_minute}" : display_minute
+#     "#{display_hour}:#{display_minute}"
+#   end
+
+#   protected
+
+#   attr_accessor :hour, :minute
+
+# end
+
+# taken from solution
+# class Clock
+#   attr_reader :hour, :minute
+
+#   ONE_DAY = 24 * 60
+
+#   def initialize(hour, minute)
+#     @hour = hour
+#     @minute = minute
+#   end
+
+#   def self.at(hour, minute=0)
+#     Clock.new(hour, minute)
+#   end
+
+#   def +(add_minutes)
+#     minutes_since_midnight = compute_minutes_since_midnight + add_minutes
+#     while minutes_since_midnight >= ONE_DAY
+#       minutes_since_midnight -= ONE_DAY
+#     end
+    
+#     compute_time_from(minutes_since_midnight)
+#   end
+
+#   def -(sub_minutes)
+#     minutes_since_midnight = compute_minutes_since_midnight - sub_minutes
+#     while minutes_since_midnight < 0
+#       minutes_since_midnight += ONE_DAY
+#     end
+
+#     compute_time_from(minutes_since_midnight)
+#   end
+
+#   def ==(other_clock)
+#     self.hour == other_clock.hour &&
+#     self.minute == other_clock.minute
+#   end
+
+#   def to_s
+#     display_hour = hour.to_s
+#     display_minute = minute.to_s
+#     display_hour.size == 1 ? display_hour = "0#{display_hour}" : display_hour
+#     display_minute.size == 1 ? display_minute = "0#{display_minute}" : display_minute
+#     "#{display_hour}:#{display_minute}"
+#   end
+
+#   def compute_minutes_since_midnight
+#     total_minutes = 60 * hour + minute
+#     total_minutes % ONE_DAY
+#   end
+
+#   def compute_time_from(minutes_since_midnight)
+#     hours, minutes = minutes_since_midnight.divmod(60)
+#     hours %= 24
+#     self.class.new(hours, minutes)
+#   end
+# end
+
+# Medium 1.4
+
+# P: 
+# write a program that take a year and month, and then a day and ordinal, 
+# and returns the corresponding date
+
+# rules: 
+# -no input validation
+# #day must return a Date object or nil
+# -weekday input should be capitalized
+# -schedule input word should be case insensitive
+# -consider number of days in month
+#   (28/29 in feb, 30 in sept, apr, may, nov, else 31)
+
+
+# E: 
+# see test suite
+
+# D: 
+# -Meetup class
+# -constructor method 
+#   - 2 args
+#       - year (integer)
+#       -month (integer)
+#   -save each to instance variables
+# -day instance method
+#   - 2 args
+#       -weekday (day of week)
+#       -schedule (first, second, third, fourth, fifth, last, or teenth)
+#   -should return a Date object with a date that corresponds to correct day of week/schedule or nil
+
+# helper method: 
+
+# A: 
+# from lesson hints: 
+# -set up a case statement for the given ranges 
+#   -these are dates that could correspond with schedule terms
+# -after selecting a range, iterate over and select the date that contains the corresponding weekday
+
+# require 'date'
+
+# class Meetup
+#   attr_reader :year, :month
+
+#   def initialize(year, month)
+#     @year = year
+#     @month = month
+#   end
+
+#   def day(weekday, schedule)
+#     week = find_week(schedule).to_a
+#     week.each do |date|
+#       day = Date.civil(year, month, date) ## need rescue for invalid dates
+#       return day if find_weekday(weekday.capitalize, day)
+#     end
+#   end
+
+#   def find_weekday(weekday, day)
+#     day.sunday? && weekday == 'Sunday' ||
+#     day.monday? && weekday == 'Monday' ||
+#     day.tuesday? && weekday == 'Tuesday' ||
+#     day.wednesday? && weekday == 'Wednesday?' ||
+#     day.thursday? && weekday == 'Thursday' ||
+#     day.friday? && weekday == 'Friday?' ||
+#     day.saturday? && weekday == 'Saturday'
+#   end
+
+#   def find_week(schedule)
+#     case schedule.downcase
+#     when 'first'  then return (1..7)
+#     when 'second' then return (2..14)
+#     when 'third'  then return (15..21)
+#     when 'fourth' then return (22..28)
+#     when 'first'  then return (20..31)
+#     else               return (22..31)
+#     end
+#   end
+# end
+
+# NOTE: checked hints etc for some direction, but primary solved without
+# reading provided pedac etc
+
+# Medium 1.5
+
+# P: 
+# create a simple linked list. need a linked list object
+# and element objects that hold data and point to the next element in 
+# the linked list
+
+# E: 
+# see test suite
+
+# D: 
+# SimpleLinkedList class
+# XX  -constructor method
+#       -no args
+#       -initialize with empty array (@list)
+# XX  -size instance method
+#       -return integer -> size of @list array
+# XX  -empty? instance method
+#       -return boolean t/f for if @list is empty
+# XX  -push() instance method
+#       -pushes element to @list
+#       -opposite -> add to front of array
+#       - OR: transforms arg to element? updates order_nu/@next?
+# XX  -peek instance method
+#       -returns something from @list (first/last element? maybe order_num for first element?)
+#       -when list is empty returns nil
+# XX  -head instance method
+#       -returns last @list element
+#       (unclear: list.head.tail? should return truthy value when 1 list element--no)
+# XX  -pop instance method
+#       -removes and returns last @list element
+#       -opposite -> remove from front of array
+# XX  -to_a (instance method, assuming from_a is returning a new LinkedList object)
+#       -should return @list (as an array)
+#   -reverse instance method
+#       -returns a reversed list (new list object)
+#       -not sure about implications for head/tail?/peek
+#       -needs to call to_a (convert list to simple order_num), reverse, and then 
+#       -create new list (call from_a)
+
+#   -from_a() CLASS method
+#       -tests w/ empty array, nil, filled arrays 
+#       -not sure -> has access to all class methods so probably needs to return a new LinkedList object
+#       -maybe assign array to @list unless nil?
+#       -> array as-is should be assigned to list
+#      - no 
+#      -> need to iterate over given aray, transforming each to an element object and assigning
+#       @order_num and @next
+
+# Element class (4 methods)
+# XX  -constructor 
+#       - 1 integer arg (order_num)
+#       - optional second arg (should be previous element, save to @next)
+# XX  -datum instance method (accessor method)
+#       -returns data -> order_num
+# XX  -tail? instance method 
+#       - returns boolean -> truthy if order_num exists?
+#       - no -> returns true if @next is nil (meaning this is the last element in list)
+# XX  -next instance method (accessor method)
+#       -returns nil if no next variable
+#       -else return element save to next
+
+# Coded with provided solution
+# class Element
+#   attr_reader :datum, :next
+
+#   def initialize(datum, next = nil)
+#     @datum = datum
+#     @next = next
+#   end
+
+#   def tail?
+#     next.nil?
+#   end
+# end
+
+# class SimpleLinkedList
+#   attr_reader :head
+
+#   def size
+#     size = 0
+#     current_elem = @head
+#     while (current_elem)
+#       size += 1
+#       current_elem = current_elem.next
+#     end
+#     size
+#   end
+
+#   def empty?
+#     @head.nil?
+#   end
+
+#   def push(data)
+#     element = Element.new(datum)
+#     @head = element
+#   end
+
+#   def peek
+#     @head.datum if @head
+#   end
+
+#   def pop
+#     datum = peek
+#     new_head = @nead.next
+#     @head = new_head
+#     datum
+#   end
+
+#   def to_a
+#     result = []
+#     current_element = @head
+#     while !current_element.nil?
+#       result.push(current_element.datum)
+#       current_element = current_element.next
+#     end
+#     result
+#   end
+
+#   def reverse
+#     list = SimpleLinkedList.new
+#     current_elem = @head
+#     while !current_elem.nil?
+#       list.push(current_elem.datum)
+#       current_elem = current_elem.next
+#     end
+#     list
+#   end
+
+#   def self.from_a(array)
+#     array = [] if array.nil?
+
+#     list = SimpleLinkedList.new
+#     array.reverse_each { |datum| list.push(datum)}
+#     list
+#   end
+# end
+
+# Medium 1.6
+# P: 
+# create a custom set class
+
+# rules: 
+# assume set elements are numbers
+# do not use built-in Set class
+
+# implicit: 
+# -object should start with @set as either nil or array 
+
+# E: 
+# see test suite
+
+# D: 
+# CustomSet class
+#XX   -constructor method
+#       -optional argument (default to empty array)
+#       -set arg to @set
+#XX   -empty? instance method
+#       - checks if @set is an empty array
+#XX   -contains?(arg) method
+#       -return boolean
+#       -check if array referenced by @set includes arg
+# XX    -subset?() instance method
+#       -returns boolean 
+#        -takes new CustomSet object as argument
+#        -rules: 
+          #   -object is a subset if both are empty
+          #   -or calling object is empty
+          #   -or calling object contains elements in arg
+          #   object is NOT a subset if
+          #     -it contains elements not in the argument set
+          
+          # -need to check whether all elements in calling set are included in argument set
+#      -disjoint? instance method
+# =>    -note: disjoint is a math term meaning 2 sets have no common numbers
+# =>      -check whether any calling set element are included in arg set;
+# =>      -if not, return true
+# =>   -eql?() instance method
+# =>    -checks if 2 sets have the same array elements
+# =>    -ignores repeated elements
+#      -add() intance method
+#       -adds arg to set unless already included  
+# =>    -should return self
+#       ==(other) instance method
+# =>      -tests require this for comparing CustomSet objects (comparing @set)
+# =>  -intersection() instance method
+# =>      -returns new set object with @set holding shared array elements (or empty if none are shared)
+# =>  -difference() instance method
+#         -returns new CustomSet object with same elements as calling object, but all @set
+# =>          elements included in arg @set removed
+#      -union() instance method
+#       -returns new CustomSet object with calling set and arg set combined into 1 array
+#         -duplicate values should not be repeated and should be sorted
+
+#NOTE: this one was so easy. so issues, super clear.
+
+class CustomSet
+  attr_reader :set
+
+  def initialize(set = [])
+    @set = set
+  end
+
+  def empty?
+    set.empty?
+  end
+
+  def contains?(arg)
+    set.include?(arg) ? true : false
+  end
+
+  def subset?(new_set)
+    new_set.empty? && self.empty? ||
+    set.all? { |el| new_set.set.include?(el)}
+  end
+
+  def disjoint?(new_set)
+    !set.any? { |el| new_set.set.include?(el)}
+  end
+
+  def eql?(new_set)
+    set.uniq.sort == new_set.set.uniq.sort
+  end
+
+  def add(el)
+    set << el unless contains(el)
+    self
+  end
+
+  def intersection(new_set)
+    shared_elements = set.select do |el|
+      new_set.set.include?(el)
     end
+
+    CustomSet.new(shared_elements)
   end
 
-  def self.make_diamond(letter)
-  return "A\n" if letter == LETTERS.first
-  total_spaces = LETTERS.index(letter) 
-  
-  result = ""
-  result << "#{" " * total_spaces}A#{" " * total_spaces}\n"
+  def difference(new_set)
+    new_elements = set.reject do |el|
+    new_set.set.include?(el)
+   end
 
-
-  1.upto(LETTERS.index(letter)) do |idx|
-    buffer = LETTERS.index(letter) - idx
-   result << "#{" " * buffer}#{LETTERS[idx]}#{" " * inner_spaces(idx)}#{LETTERS[idx]}#{" " * buffer}\n"
+    CustomSet.new(new_elements)
   end
 
-  (LETTERS.index(letter) - 1).downto(1) do |idx|
-   buffer = LETTERS.index(letter) - idx
-   result << "#{" " * buffer}#{LETTERS[idx]}#{" " * inner_spaces(idx)}#{LETTERS[idx]}#{" " * buffer}\n"
-  end
-
-  result << "#{" " * total_spaces}A#{" " * total_spaces}\n"
-  result
-  end
+  def union(new_set)
+    new_elements = set + new_set
+    CustomSet.new(new_elements.uniq.sort)
+  end 
 end
 
-puts Diamond.make_diamond('E')
+t = CustomSet.new([1, 2, 3, 4])
+p t.contains?(1
